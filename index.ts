@@ -1,16 +1,25 @@
-import express, {Express, Request, Response} from "express";
+import app, {port} from "./config/app";
+import auth from "./auths/auth";
+import register from "./auths/register";
+import login from "./auths/login";
+import { AuthUserRequest } from "./config/interfaces";
 
-const app = express();
 
-const port = process.env.PORT || 3000;
+//ROUTES & LOGIC
 
 app.get("/", (req, res) => {
-    res.send("Hello from express from typesxript");
-})
+    res.send("Hello from express from typescript");
+});
 
-app.get("/hi", (req, res) => {
-    res.send("HI")
-})
+app.post('/register', register);
+
+app.post('/login', login);
+
+app.get("/user", auth, (req, res) => { 
+    res.status(201).json((req as AuthUserRequest).user); 
+});
+
+
 
 app.listen(port, () => {
     console.log("App started on port " + port);
