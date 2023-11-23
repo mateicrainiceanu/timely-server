@@ -20,7 +20,7 @@ const login = async (req:Request, res:Response, next:NextFunction) => {
         if (user.password === md5(password)) {
             //password is correct
             const token = jwt.sign(
-                { id: user.id, name: user.name, email },
+                { id: user.id, email },
                 process.env.TOKEN_KEY as string,
                 {
                   expiresIn: "2d",

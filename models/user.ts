@@ -7,8 +7,8 @@ interface User {
 }
 
 class User {
-    constructor(name:string, email:string, password:string) {
-        this.name = name;
+    constructor(email:string, password:string) {
+
         this.email = email;
         this.password = password;
     }
@@ -16,10 +16,9 @@ class User {
     async save() {
         let sql = `
         INSERT INTO users (
-            name, email, password
+             email, password
         ) 
         VALUES (
-            '${this.name}',
             '${this.email}',
             '${this.password}'
         );`

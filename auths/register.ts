@@ -10,7 +10,7 @@ import * as dotenv from 'dotenv';
 dotenv.config()
 
 const register = async (req:Request, res:Response, next:NextFunction) => {
-    const {name, email, password} = req.body
+    const {email, password} = req.body    
 
     const [result] = await User.findByEmail(email)
 
@@ -19,7 +19,7 @@ const register = async (req:Request, res:Response, next:NextFunction) => {
         //safe to proceed with creating a new account
 
         //saving new user
-        const newuser = new User(name, email, md5(password))
+        const newuser = new User(email, md5(password))
         const [{insertId}] = await newuser.save()
 
         const token = jwt.sign(
