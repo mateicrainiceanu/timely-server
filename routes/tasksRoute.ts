@@ -29,7 +29,14 @@ router.route("/tasks")
                 status: "NotStarted"
             });
 
-            const warnings = (await newTask.save())[0].warningStatus;
+            const result = (await newTask.save())[0]
+
+            const orderSetUp = (await Task.setOrderForTask(result.insertId))[0];
+
+            console.log(orderSetUp.warnings);
+            
+
+            const warnings = result.warningStatus;
 
             if (!warnings) {
                 res.status(201).send("ok")

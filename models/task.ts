@@ -8,6 +8,7 @@ interface Task {
     userId: number;
     startDate?: Date;
     duration?: number;
+    showKey?: number;
 }
 
 class Task {
@@ -28,20 +29,25 @@ class Task {
             ${this.userId},
             '${this.startDate}',
             '${this.duration}'
-        );`
+        )`
 
         return db.execute(sql);
     };
 
-    static update(task: Task) {   
-        
+    static setOrderForTask(taskId: number) {
+        let sql = `UPDATE tasks SET showKey = ${taskId}.00 WHERE id = ${taskId};`
+        return db.execute(sql);
+    }
+
+    static update(task: Task) {
+
         const theDateInDateFormat = new Date(new Date(task.startDate as Date))
 
         var date = (theDateInDateFormat as any).toMysqlDate();
 
         let sql = `
         UPDATE tasks 
-        SET name = '${task.name}', status = '${task.status}', startDate = '${date}', duration = '${task.duration}'
+        SET name = '${task.name}', status = '${task.status}', startDate = '${date}', duration = '${task.duration}', showKey=${task.showKey}
         WHERE id = ${task.id};`
 
         return (db.execute(sql));
@@ -51,6 +57,7 @@ class Task {
         let sql = `
         SELECT * FROM tasks WHERE 
         userid = ${userId}
+        ORDER BY showKey;
         ;`
 
         return db.execute(sql);
@@ -73,7 +80,8 @@ class Task {
         if (results.length > 0) {
             return results[0] as Task;
         } else {
-            throw ("not task with this id was found");
+            console.log("not task with this id was found");
+            throw('');
         }
     }
 
