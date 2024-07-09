@@ -72,4 +72,38 @@ router.route("/tasks")
         }
     });
 
+    router.route("/arragebyduration")
+    .post(auth, async (req, res) => {
+        const userid = ((req as AuthUserRequest).user as User).id;
+        if (userid !== undefined) {
+            const tasksByUser: Array<Task>= (await Task.getForUser(userid))[0];
+
+            var prevDuration = "00:00"
+            var prevStartDate = tasksByUser[0].startDate;
+            var lastUpdate
+
+            tasksByUser.forEach((task) => {
+                var newStartDate = prevStartDate;
+                const hours = newStartDate.getHours() + Number(prevDuration.slice(0, 2));
+                const minutes = newStartDate.getMinutes() + Number(prevDuration.slice(3,5))
+
+                newStartDate.setHours(hours);
+                newStartDate.setMinutes(minutes);
+                                
+                prevStartDate = newStartDate;
+                prevDuration = task.duration;
+
+                task.startDate = newStartDate;
+
+                lastUpdate = Task.update(task);
+            });
+
+            await lastUpdate;
+
+            res.status(201).json({err: "ok"});
+        } else {
+            res.status(400).json({ err: "Could not idetntify user" })
+        }
+    });
+
 export default router;

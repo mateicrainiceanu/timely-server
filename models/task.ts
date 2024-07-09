@@ -6,8 +6,8 @@ interface Task {
     name: string;
     status: "NotStarted" | "InProgress" | "Finished"
     userId: number;
-    startDate?: Date;
-    duration?: number;
+    startDate: Date;
+    duration: string;
     showKey?: number;
 }
 
